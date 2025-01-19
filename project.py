@@ -115,3 +115,20 @@ def prepare_data_y(x, window_size):
     #use the next day as label
     output = x[window_size:]
     return output
+
+data_x, data_x_unseen = prepare_data(normalized_data_closed_price, window_size=["data"]["window_size"])
+data_y = prepare_data_y(normalized_data_closed_price, window_size=configuration["data"]["window_size"])
+
+# split dataset
+split_index = int(data_y.shape[0]*configuration["data"]["tarain_split_size"])
+data_x_train = data_x[:split_index]
+data_x_val = data_x[split_index]
+data_y_train = data_y[:split_index]
+data_y_val = data_y[split_index:]
+
+# prepare for plotting
+to_plot_data_y_train = np.zeros(num_data_points)
+to_plot_data_y_val = np.zeros(num_data_points)
+
+to_plot_data_y_train[configuration]["data"]["window_size"]:split_index+configuration["data"]["window_size"] = scaler.inverse_transform(data_y_train)
+to_plot_data_y_val[split_index+configuration]["data"]["window_size"] = scaler.inverse_transform(data_y_val)
